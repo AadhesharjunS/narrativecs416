@@ -1,3 +1,4 @@
+//page2 graph
 async function electricity() {
   const margin = {top: 80, right: 80, bottom: 40, left: 80},
         width = 800 - margin.left - margin.right,
@@ -124,6 +125,12 @@ async function electricity() {
     update(nextCountry)
   });
 }
+
+
+
+
+
+
 
 //page3 graph
 async function elecgdp() {
@@ -255,6 +262,143 @@ async function elecgdp() {
     update(nextCountry)
   });
 }
+
+
+
+//page4 graph
+async function eleclife() {
+  const margin = {top: 80, right: 80, bottom: 40, left: 80},
+        width = 800 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+  const data = await d3.csv("data/combined.csv");
+
+  let svg = d3.select("#electriclife").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+  
+  //Dropdown
+  const entities = getCountries();
+  d3.select("#select-country")
+    .selectAll('country-options')
+    .data(entities)
+    .enter()
+    .append('option')
+    .text(function (d) {return d;})
+    .attr("value", function (d) {return d;});
+  
+  //Scatter Plot
+  const option1 = data.filter(function (d) {
+    return d.entity === entities[0]
+  });
+  
+  const x = d3.scaleLinear()
+    .domain([Math.floor(d3.min(option1,f => +f.lifeex)/10)*10 ,Math.ceil(d3.max(option1,f => +f.lifeex)/10)*10])
+    .range([0, width]);
+  const xAxis = svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).tickFormat(f => f + " yrs"));
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(option1, d => +d.egen)])
+    .range([height, 0]);
+  const yAxis = svg.append("g").call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
+
+  const line = svg.append('g')
+    .append("path")
+    .attr("id", "line-" + entities[0])
+    .datum(option1)
+    .attr("d", d3.line()
+          .x(function (d) {return x(Number(d.lifeex))})
+          .y(function (d) {return y(Number(d.egen))}))
+    .attr("stroke","none")
+    .style("stroke-width", 5)
+  .style("fill","none");
+
+  svg.append("text")
+    .attr("x", (width / 2))
+    .attr("y", 0 - (margin.top / 2))
+    .attr("text-anchor", "middle")  
+    .style("font-size", "16px")
+    .text("Electricity Generation vs Life Expectancy");
+
+  //Mouseover
+  const tooltip = d3.select("#electriclife").append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .style("position", "absolute")
+    .style("pointer-events", "none");
+  
+  const mouseover = function(event, d) {tooltip.style("opacity", 1);};
+  
+  const mousemove = function(event, d) {
+    tooltip.html("Year: " + d.year + "<br>Electricity Generated: " + d.egen+"  TWh<br>Life Expectancy: " + d.gdp + "yrs")
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY - 28) + "px");
+  };
+  const mouseleave = function(event, d) {tooltip.style("opacity", 0);};
+  
+  //Add dots
+  svg.selectAll("dot")
+    .data(option1)
+    .enter().append("circle")
+    .attr("cx", function(d) { return x(d.lifeex); })
+    .attr("cy", function(d) { return y(d.egen); })
+    .attr("r", 8)
+    .attr("fill", "darkred")
+    .on("mouseover", mouseover)
+    .on("mousemove", mousemove)
+    .on("mouseleave", mouseleave);
+
+  //update upon new country selection
+  function update(newCountry) {
+    const countryData = data.filter(function (d) {return d.entity === newCountry;});
+    x.domain([Math.floor(d3.min(option1,f => +f.lifeex)/10)*10 ,Math.ceil(d3.max(option1,f => +f.lifeex)/10)*10])
+    xAxis.transition().duration(1000).call(d3.axisBottom(x).tickFormat(d => d + "yrs"));
+    y.domain([0, d3.max(countryData, d => +d.egen)]);
+    yAxis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
+    
+    line.datum(countryData)
+      .transition()
+      .duration(1000)
+      .attr("id", "line-" + newCountry)
+      .attr("d", d3.line()
+            .x(function (d) {return x(Number(d.lifeex))})
+            .y(function (d) {return y(Number(d.egen))}))
+      .attr("stroke","none")
+      .style("stroke-width", 5)
+      .style("fill","none");
+  
+
+    //update mouseover
+    const circles = svg.selectAll("circle")
+      .data(countryData);
+    
+    circles.enter().append("circle")
+      .merge(circles)
+      .transition()
+      .duration(1000)
+      .attr("cx", function(d) { return x(d.lifeex); })
+      .attr("cy", function(d) { return y(d.egen); })
+      .attr("r",8)
+      .attr("fill", "darkred");
+      
+    circles.exit().remove();
+  }
+  d3.select("#select-country").on("change", function (d) {
+    const nextCountry = d3.select(this).property("value")
+    update(nextCountry)
+  });
+}
+
+
+
+
   
 function getCountries() {
   //196 countries
