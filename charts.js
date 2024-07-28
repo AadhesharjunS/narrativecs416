@@ -28,7 +28,7 @@ async function electricity() {
   
   const x = d3.scaleLinear()
     //.domain([1990, 2021])
-    .domain([0,100])
+    .domain([(parseInt((d3.min(option1, d => +d.lifeex))/10,10)*10), (parseInt((d3.max(option1, d => +d.lifeex))/10,10) + 1 * 10)])
     .range([0, width]);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
