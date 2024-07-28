@@ -56,7 +56,9 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-        d3.csv("./data/combined.csv").then(data => {
+        const comb = "https://github.com/AadhesharjunS/narrativecs416/blob/main/data/combined.csv";
+        
+        d3.csv(comb).then(data => {
             data.forEach(d => {
                 d.year = new Date(d.year, 0, 1);
                 d.electricity_generation = +d.electricity_generation;
