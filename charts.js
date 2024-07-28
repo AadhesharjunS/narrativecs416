@@ -226,7 +226,7 @@ async function elecgdp() {
     //   .style("stroke-width", 5)
     //   .style("fill","none");
 
-    dots.datum(newCountry)
+    dots.data(newCountry)
       .transition()
       .duration(1000)
       .attr("cx", function (d) { return x(Number(d.gdp)); } )
