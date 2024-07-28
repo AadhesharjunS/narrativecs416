@@ -75,7 +75,7 @@ async function electricity() {
     .attr("cx", function(d) { return x(d.year); })
     .attr("cy", function(d) { return y(d.egen); })
     .attr("r", 5)
-    .attr("fill", "red")
+    .attr("fill", "black")
     .on("mouseover", mouseover)
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
