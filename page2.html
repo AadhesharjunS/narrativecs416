@@ -55,10 +55,8 @@
         const tooltip = d3.select("body").append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
-
-        const comb = "https://github.com/AadhesharjunS/narrativecs416/data/combined.csv";
         
-        d3.csv(comb).then(data => {
+        d3.csv("data/combined.csv").then(data => {
             data.forEach(d => {
                 d.year = new Date(d.year, 0, 1);
                 d.electricity_generation = +d.electricity_generation;
