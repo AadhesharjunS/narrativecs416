@@ -9,7 +9,7 @@ async function electricity() {
   
   //Dropdown
   const entities = getCountries();
-  d3.select("#dropdown")
+  d3.select("#select-country")
     .selectAll('country-options')
     .data(entities)
     .enter()
