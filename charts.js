@@ -164,6 +164,17 @@ async function elecgdp() {
     .range([height, 0]);
   const yAxis = svg.append("g").call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
 
+  const line = svg.append('g')
+    .append("path")
+    .attr("id", "line-" + entities[0])
+    .datum(option1)
+    .attr("d", d3.line()
+          .x(function (d) {return x(Number(d.gdp))})
+          .y(function (d) {return y(Number(d.egen))}))
+    .attr("stroke","none")
+    .style("stroke-width", 5)
+  .style("fill","none");
+
   svg.append("text")
     .attr("x", (width / 2))
     .attr("y", 0 - (margin.top / 2))
@@ -191,17 +202,15 @@ async function elecgdp() {
       .style("top", (event.pageY - 28) + "px");
   };
   const mouseleave = function(event, d) {tooltip.style("opacity", 0);};
-
-  //dots
-  svg.append('g')
-    .selectAll("dot")
+  
+  //Add dots
+  svg.selectAll("dot")
     .data(option1)
-    .enter()
-    .append("circle")
-      .attr("cx", function (d) { return x(Number(d.gdp)); } )
-      .attr("cy", function (d) { return y(Number(d.egen)); } )
-      .attr("r", 4)
-      .style("fill", "blue")
+    .enter().append("circle")
+    .attr("cx", function(d) { return x(d.gdp); })
+    .attr("cy", function(d) { return y(d.egen); })
+    .attr("r", 5)
+    .attr("fill", "blue")
     .on("mouseover", mouseover)
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
@@ -209,44 +218,37 @@ async function elecgdp() {
   //update upon new country selection
   function update(newCountry) {
     const countryData = data.filter(function (d) {return d.entity === newCountry;});
-
     x.domain([Math.floor(d3.min(countryData,d => +d.gdp)/1000)*1000 ,Math.ceil(d3.max(countryData,d => +d.gdp)/1000)*1000]);
-    yAxis.transition().duration(1000).call(d3.axisBottom(x).tickFormat(d => "$" + d));
+    xAxis.transition().duration(1000).call(d3.axisBottom(x).tickFormat(d => "$" + d));
     y.domain([0, d3.max(countryData, d => +d.egen)]);
     yAxis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
     
-    // line.datum(countryData)
-    //   .transition()
-    //   .duration(1000)
-    //   .attr("id", "line-" + newCountry)
-    //   .attr("d", d3.line()
-    //         .x(function (d) {return x(Number(d.gdp))})
-    //         .y(function (d) {return y(Number(d.egen))}))
-    //   .attr("stroke","black")
-    //   .style("stroke-width", 5)
-    //   .style("fill","none");
-
-    dots.data(newCountry)
+    line.datum(countryData)
       .transition()
       .duration(1000)
-      .attr("cx", function (d) { return x(Number(d.gdp)); } )
-      .attr("cy", function (d) { return y(Number(d.egen)); } )
-      .attr("r", 4)
-      .style("fill", "blue")
-      .on("mouseover", mouseover1)
-      .on("mousemove", mousemove1)
-      .on("mouseleave", mouseleave1);
-
-      const mouseover1 = function(event, d) {tooltip.style("opacity", 1);};
+      .attr("id", "line-" + newCountry)
+      .attr("d", d3.line()
+            .x(function (d) {return x(Number(d.gdp))})
+            .y(function (d) {return y(Number(d.egen))}))
+      .attr("stroke","none")
+      .style("stroke-width", 5)
+      .style("fill","none");
   
-  const mousemove1 = function(event, d) {
-    tooltip.html("Year: " + d.year + "<br>Electricity Generated: " + d.egen+"  TWh<br>GDP Per Capita: $" + d.gdp)
-      .style("left", (event.pageX + 10) + "px")
-      .style("top", (event.pageY - 28) + "px");
-  };
-  const mouseleave1 = function(event, d) {tooltip.style("opacity", 0);};
 
+    //update mouseover
+    const circles = svg.selectAll("circle")
+      .data(countryData);
     
+    circles.enter().append("circle")
+      .merge(circles)
+      .transition()
+      .duration(1000)
+      .attr("cx", function(d) { return x(d.gdp); })
+      .attr("cy", function(d) { return y(d.egen); })
+      .attr("r",4)
+      .attr("fill", "blue");
+      
+    circles.exit().remove();
   }
   d3.select("#select-country").on("change", function (d) {
     const nextCountry = d3.select(this).property("value")
