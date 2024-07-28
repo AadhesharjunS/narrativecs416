@@ -49,6 +49,37 @@ async function electricity() {
     .style("stroke-width", 5)
   .style("fill","none");
 
+  //Mouseover
+  const tooltip = d3.select("#electricgraph").append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .style("position", "absolute")
+    .style("pointer-events", "none");
+  
+  const mouseover = function(event, d) {tooltip.style("opacity", 1);};
+  
+  const mousemove = function(event, d) {
+    tooltip.html("Year: " + d.year + "<br>Electrcity Generated: " + d.egen)
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY - 28) + "px");
+  };
+  const mouseleave = function(event, d) {tooltip.style("opacity", 0);};
+  svg.selectAll("dot")
+    .data(option1)
+    .enter().append("circle")
+    .attr("cx", function(d) { return x(d.year); })
+    .attr("cy", function(d) { return y(d.egen); })
+    .attr("r", 5)
+    .attr("fill", "red")
+    .on("mouseover", mouseover)
+    .on("mousemove", mousemove)
+    .on("mouseleave", mouseleave);
+
   //update upon new country selection
   function update(newCountry) {
     const countryData = data.filter(function (d) {return d.entity === newCountry;});
@@ -65,8 +96,23 @@ async function electricity() {
       .attr("stroke","black")
       .style("stroke-width", 5)
       .style("fill","none");
-  }
   
+
+    //update mouseover
+    const circles = svg.selectAll("circle")
+      .data(countryData);
+    
+    circles.enter().append("circle")
+      .merge(circles)
+      .transition()
+      .duration(1000)
+      .attr("cx", function(d) { return x(d.year); })
+      .attr("cy", function(d) { return y(d.egen); })
+      .attr("r", 5)
+      .attr("fill", "red");
+      
+    circles.exit().remove();
+  }
   d3.select("#select-country").on("change", function (d) {
     const nextCountry = d3.select(this).property("value")
     update(nextCountry)
