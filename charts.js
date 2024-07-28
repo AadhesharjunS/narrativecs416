@@ -358,7 +358,7 @@ async function eleclife() {
   //update upon new country selection
   function update(newCountry) {
     const countryData = data.filter(function (d) {return d.entity === newCountry;});
-    x.domain([Math.floor(d3.min(option1,f => +f.lifeex)/10)*10 ,Math.ceil(d3.max(option1,f => +f.lifeex)/10)*10])
+    x.domain([Math.floor(d3.min(countryData,f => +f.lifeex)/10)*10 ,Math.ceil(d3.max(countryData,f => +f.lifeex)/10)*10])
     xAxis.transition().duration(1000).call(d3.axisBottom(x).tickFormat(d => d + "yrs"));
     y.domain([0, d3.max(countryData, d => +d.egen)]);
     yAxis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
