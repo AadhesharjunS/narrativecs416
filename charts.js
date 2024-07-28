@@ -37,11 +37,11 @@ async function elecgdp() {
     .range([0, width]);
   const x1Axis = svg1.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+    .call(d3.axisBottom(x1).tickFormat(d3.format("d")));
   const y1 = d3.scaleLinear()
     .domain([0, d3.max(option1, d => +d.egen)])
     .range([height, 0]);
-  const y1Axis = svg1.append("g").call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
+  const y1Axis = svg1.append("g").call(d3.axisLeft(y1).tickFormat(d => d + " TWh"));
   
   
   const line1 = svg1.append('g')
@@ -68,11 +68,11 @@ async function elecgdp() {
     .range([0, width]);
   const x2Axis = svg2.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+    .call(d3.axisBottom(x2).tickFormat(d3.format("d")));
   const y2 = d3.scaleLinear()
     .domain([0, d3.max(option1, d => +d.gdp)])
     .range([height, 0]);
-  const y2Axis = svg2.append("g").call(d3.axisLeft(y).tickFormat(d => "$" + d));
+  const y2Axis = svg2.append("g").call(d3.axisLeft(y2).tickFormat(d => "$" + d));
   
   
   const line2 = svg2.append('g')
