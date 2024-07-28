@@ -119,6 +119,8 @@ async function elecgdp() {
     .attr("cx", function(d) { return x(d.year); })
     .attr("cy", function(d) { return y(d.egen); })
     .attr("r", 5)
+<<<<<<< HEAD
+<<<<<<< HEAD
     .attr("fill", "black")
     .on("mouseover", mouseover1)
     .on("mousemove", mousemove1)
@@ -153,6 +155,14 @@ async function elecgdp() {
     .on("mouseover", mouseover2)
     .on("mousemove", mousemove2)
     .on("mouseleave", mouseleave2);
+=======
+=======
+>>>>>>> parent of 41407aa (Update charts.js)
+    .attr("fill", "red")
+    .on("mouseover", mouseover)
+    .on("mousemove", mousemove)
+    .on("mouseleave", mouseleave);
+>>>>>>> parent of 41407aa (Update charts.js)
 
   //update upon new country selection
   function update(newCountry) {
