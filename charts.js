@@ -44,7 +44,9 @@ async function electricity() {
     .attr("d", d3.line()
           .x(function (d) {return x(Number(d.year))})
           .y(function (d) {return y(Number(d.egen))}))
-    .style("stroke-width", 2)
+    .attr("stroke","black")
+    .style("stroke-width", 5)
+  .style("fill","none")
 
   //update upon new country selection
   function update(newCountry) {
