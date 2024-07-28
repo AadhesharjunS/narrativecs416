@@ -2,7 +2,7 @@ async function electricity() {
   const margin = {top: 20, right: 30, bottom: 40, left: 80},
         width = 800 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
-  const data = await d3.csv("https://aadhesharjuns.github.io/narrativecs416/data/combined.csv");
+  const data = await d3.csv("data/combined.csv");
   
   let svg = d3.select("#electricgraph").append("svg")
     .attr("width", width + margin.left + margin.right)
