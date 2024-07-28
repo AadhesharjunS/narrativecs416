@@ -27,9 +27,7 @@ async function electricity() {
   });
   
   const x = d3.scaleLinear()
-    //.domain([1990, 2021])
-    .domain(
-    [ (  Math.floor( (d3.min(option1, d => +d.lifeex)) / 10) * 10  ), (   Math.ceil((d3.max(option1, d => +d.lifeex))/ 10) * 10 )])
+    .domain([1990, 2021])
     .range([0, width]);
   const xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -45,7 +43,7 @@ async function electricity() {
     .attr("id", "line-" + entities[0])
     .datum(option1)
     .attr("d", d3.line()
-          .x(function (d) {return x(Number(d.lifeex))})
+          .x(function (d) {return x(Number(d.year))})
           .y(function (d) {return y(Number(d.egen))}))
     .attr("stroke","black")
     .style("stroke-width", 5)
@@ -54,9 +52,6 @@ async function electricity() {
   //update upon new country selection
   function update(newCountry) {
     const countryData = data.filter(function (d) {return d.entity === newCountry;});
-
-    x.domain([(Math.floor((d3.min(option1, d => +d.lifeex))/10)*10),(Math.ceil((d3.max(option1, d => +d.lifeex))/10)*10)]);
-    xAxis.transition().duration(1000).call(d3.axisBottom(x).tickFormat(d3.format("d")));
     y.domain([0, d3.max(countryData, d => +d.egen)]);
     yAxis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
     
@@ -65,7 +60,7 @@ async function electricity() {
       .duration(1000)
       .attr("id", "line-" + newCountry)
       .attr("d", d3.line()
-            .x(function (d) {return x(Number(d.lifeex))})
+            .x(function (d) {return x(Number(d.year))})
             .y(function (d) {return y(Number(d.egen))}))
       .attr("stroke","black")
       .style("stroke-width", 5)
