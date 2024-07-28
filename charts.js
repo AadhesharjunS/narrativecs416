@@ -22,6 +22,10 @@ async function electricity() {
     .attr("value", function (d) {return d;});
   
   //Line Graph
+  const option1 = data.filter(function (d) {
+    return d.entity === entities[0]
+  });
+  
   const x = d3.scaleLinear()
     .domain([1990, 2021])
     .range([0, width]);
@@ -29,14 +33,10 @@ async function electricity() {
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x).tickFormat(d3.format("d")));
   const y = d3.scaleLinear()
-    .domain([0, d3.max(entities[0], d => +d.egen)])
+    .domain([0, d3.max(option1, d => +d.egen)])
     .range([height, 0]);
-  svg.append("g")
-    .call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
+  const yAxis = svg.append("g").call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
   
-  const option1 = data.filter(function (d) {
-    return d.entity === entities[0]
-  });
   
   const line = svg.append('g')
     .append("path")
