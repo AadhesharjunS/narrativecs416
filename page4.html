@@ -1,1 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> GDP Per Capita vs Electricity Generation - CS 416 Narrative Viz Project</title>
+    <script src="charts.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body onload="eleclife()">
+    <style>     
+      .jumbotron {
+          background: black;
+          padding-top: 15px;
+          padding-bottom: 15px;
+          margin-top: 20px;
+          margin-bottom: 20px;
+      }
+      .header{
+        color: white;
+        position: center;
+      }
 
+      .header h1{
+        position: center;
+        left: 10px;
+      }
+
+    </style>
+    <div class="jumbotron">
+            <div class="header">
+              <h1>Electricity Generation Over Life Expectancy & Country</h1>
+            </div>
+        </div>
+    <div class = "container">
+        <p>Description</p>
+        <select id="select-country"></select>
+        <div id="electriclife"></div>
+        <div class="row mt-4">
+          <div class="col"><a class="btn btn-dark btn-lg btn-block" href="page3.html" role="button">&lt&lt Previous</a></div>
+          <div class="col"><a class="btn btn-dark btn-lg btn-block" href="index.html" role="button">Intro</a></div>
+          <div class="col"><a class="btn btn-dark btn-lg btn-block" href="page5.html" role="button">Next &gt&gt</a></div>
+        </div>
+    </div>
+</body>
+</html>
