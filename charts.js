@@ -154,7 +154,7 @@ async function elecgdp() {
   });
   
   const x = d3.scaleLinear()
-    .domain([Math.floor(d3.min(option1,f => +d.gdp)/1000)*1000 ,Math.ceil(d3.max(option1,f => +d.gdp)/1000)*1000])
+    .domain([Math.floor(d3.min(option1,f => +f.gdp)/1000)*1000 ,Math.ceil(d3.max(option1,f => +f.gdp)/1000)*1000])
     .range([0, width]);
   const xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
