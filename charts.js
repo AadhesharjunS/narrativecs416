@@ -1,5 +1,5 @@
 async function electricity() {
-  const margin = {top: 40, right: 80, bottom: 40, left: 80},
+  const margin = {top: 80, right: 80, bottom: 40, left: 80},
         width = 800 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
   const data = await d3.csv("data/combined.csv");
@@ -127,7 +127,7 @@ async function electricity() {
 
 //page3 graph
 async function elecgdp() {
-  const margin = {top: 40, right: 80, bottom: 40, left: 80},
+  const margin = {top: 80, right: 80, bottom: 40, left: 80},
         width = 800 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
   const data = await d3.csv("data/combined.csv");
@@ -209,7 +209,7 @@ async function elecgdp() {
     .enter().append("circle")
     .attr("cx", function(d) { return x(d.gdp); })
     .attr("cy", function(d) { return y(d.egen); })
-    .attr("r", 5)
+    .attr("r", 8)
     .attr("fill", "blue")
     .on("mouseover", mouseover)
     .on("mousemove", mousemove)
@@ -245,7 +245,7 @@ async function elecgdp() {
       .duration(1000)
       .attr("cx", function(d) { return x(d.gdp); })
       .attr("cy", function(d) { return y(d.egen); })
-      .attr("r",4)
+      .attr("r",8)
       .attr("fill", "blue");
       
     circles.exit().remove();
