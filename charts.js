@@ -28,9 +28,10 @@ async function electricity() {
   
   const x = d3.scaleLinear()
     //.domain([1990, 2021])
-    .domain([(parseInt((d3.min(option1, d => +d.lifeex))/10,10)*10), (parseInt((d3.max(option1, d => +d.lifeex))/10,10) + 1 * 10)])
+    .domain(
+    [ (  Math.floor( (d3.min(option1, d => +d.lifeex)) / 10) * 10  ), (   Math.ceil((d3.max(option1, d => +d.lifeex))/ 10) * 10 )])
     .range([0, width]);
-  svg.append("g")
+  const xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x).tickFormat(d3.format("d")));
   const y = d3.scaleLinear()
