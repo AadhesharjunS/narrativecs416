@@ -55,8 +55,8 @@ async function electricity() {
   function update(newCountry) {
     const countryData = data.filter(function (d) {return d.entity === newCountry;});
 
-    x.domain(
-    [ (  Math.floor( (d3.min(option1, d => +d.lifeex)) / 10) * 10  ), (   Math.ceil((d3.max(option1, d => +d.lifeex))/ 10) * 10 )]);
+    x.domain([(Math.floor((d3.min(option1, d => +d.lifeex))/10)*10),(Math.ceil((d3.max(option1, d => +d.lifeex))/10)*10)]);
+    xAxis.transition().duration(1000).call(d3.axisBottom(x).tickFormat(d3.format("d")));
     y.domain([0, d3.max(countryData, d => +d.egen)]);
     yAxis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
     
