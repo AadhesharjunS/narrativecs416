@@ -40,7 +40,7 @@ async function electricity() {
   const line = svg.append('g')
     .append("path")
     .attr("id", "line-" + entities[0])
-    .data(option1)
+    .datum(option1)
     .attr("d", d3.line()
           .x(function (d) {return x(Number(d.year))})
           .y(function (d) {return y(Number(d.egen))}))
