@@ -1,11 +1,14 @@
 async function electricity() {
-  const width = 800, height = 600;
+  const const margin = {top: 50, right: 20, bottom: 50, left: 20},
+        width = 1000 - margin.left - margin.right,
+        height = 800 - margin.top - margin.bottom;
   const data = await d3.csv("https://aadhesharjuns.github.io/narrativecs416/data/combined.csv");
   
   const svg = d3.select("#electricgraph").append("svg")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
     .append("g")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
   
   //Dropdown
   const entities = getCountries();
