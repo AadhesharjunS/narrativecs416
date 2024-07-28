@@ -1,6 +1,6 @@
 async function electricity() {
   //https://d3-graph-gallery.com/graph/line_select.html
-  const margin = {top: 20, right: 30, bottom: 40, left: 80},
+  const margin = {top: 40, right: 80, bottom: 40, left: 80},
         width = 800 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
   const data = await d3.csv("data/combined.csv");
