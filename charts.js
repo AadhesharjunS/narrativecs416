@@ -31,7 +31,7 @@ async function electricity() {
     .domain([0, 10000])
     .range([height, 0]);
   svg.append("g")
-    .call(d3.axisLeft(y).tickFormat(d => d + " $TWh"));
+    .call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
   
   const option1 = data.filter(function (d) {
     return d.entity === entities[0]
