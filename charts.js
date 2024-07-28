@@ -1,4 +1,5 @@
 async function electricity() {
+  //https://d3-graph-gallery.com/graph/line_select.html
   const margin = {top: 20, right: 30, bottom: 40, left: 80},
         width = 800 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
@@ -52,7 +53,9 @@ async function electricity() {
   function update(newCountry) {
     const countryData = data.filter(function (d) {return d.entity === newCountry;});
     
-    line.data(countryData)
+    line.datum(countryData)
+      .transition()
+      .duration(1000)
       .attr("id", "line-" + newCountry)
       .attr("d", d3.line()
             .x(function (d) {return x(Number(d.year))})
