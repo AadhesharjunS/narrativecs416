@@ -1,17 +1,11 @@
-async function elecgdp() {
+async function electricity() {
   //https://d3-graph-gallery.com/graph/line_select.html
   const margin = {top: 20, right: 30, bottom: 40, left: 80},
         width = 800 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
   const data = await d3.csv("data/combined.csv");
   
-  const svg1 = d3.select("#electricgraph").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
-
-  const svg2 = d3.select("#gdpgraph").append("svg")
+  let svg = d3.select("#electricgraph").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -32,19 +26,19 @@ async function elecgdp() {
     return d.entity === entities[0]
   });
   
-  const x1 = d3.scaleLinear()
+  const x = d3.scaleLinear()
     .domain([1990, 2021])
     .range([0, width]);
-  const x1Axis = svg1.append("g")
+  const xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x1).tickFormat(d3.format("d")));
-  const y1 = d3.scaleLinear()
+    .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+  const y = d3.scaleLinear()
     .domain([0, d3.max(option1, d => +d.egen)])
     .range([height, 0]);
-  const y1Axis = svg1.append("g").call(d3.axisLeft(y1).tickFormat(d => d + " TWh"));
+  const yAxis = svg.append("g").call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
   
   
-  const line1 = svg1.append('g')
+  const line = svg.append('g')
     .append("path")
     .attr("id", "line-" + entities[0])
     .datum(option1)
@@ -55,46 +49,15 @@ async function elecgdp() {
     .style("stroke-width", 5)
   .style("fill","none");
 
-  svg1.append("text")
+  svg.append("text")
     .attr("x", (width / 2))
     .attr("y", 0 - (margin.top / 2))
     .attr("text-anchor", "middle")  
     .style("font-size", "16px")
     .text("Electricity Generation vs Year");
 
-  //gdp
-  const x2 = d3.scaleLinear()
-    .domain([1990, 2021])
-    .range([0, width]);
-  const x2Axis = svg2.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x2).tickFormat(d3.format("d")));
-  const y2 = d3.scaleLinear()
-    .domain([0, d3.max(option1, d => +d.gdp)])
-    .range([height, 0]);
-  const y2Axis = svg2.append("g").call(d3.axisLeft(y2).tickFormat(d => "$" + d));
-  
-  
-  const line2 = svg2.append('g')
-    .append("path")
-    .attr("id", "line-" + entities[0])
-    .datum(option1)
-    .attr("d", d3.line()
-          .x(function (d) {return x(Number(d.year))})
-          .y(function (d) {return y(Number(d.gdp))}))
-    .attr("stroke","black")
-    .style("stroke-width", 5)
-  .style("fill","none");
-
-  svg2.append("text")
-    .attr("x", (width / 2))
-    .attr("y", 0 - (margin.top / 2))
-    .attr("text-anchor", "middle")  
-    .style("font-size", "16px")
-    .text("GDP Per Capita vs Year");
-
   //Mouseover
-  const tooltip1 = d3.select("#electricgraph").append("div")
+  const tooltip = d3.select("#electricgraph").append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
     .style("background-color", "white")
@@ -104,75 +67,33 @@ async function elecgdp() {
     .style("padding", "5px")
     .style("position", "absolute")
     .style("pointer-events", "none");
-
-  const mouseover1 = function(event, d) {tooltip1.style("opacity", 1);};
   
-  const mousemove1 = function(event, d) {
-    tooltip1.html("Year: " + d.year + "<br>Electricity Generated: " + d.egen)
+  const mouseover = function(event, d) {tooltip.style("opacity", 1);};
+  
+  const mousemove = function(event, d) {
+    tooltip.html("Year: " + d.year + "<br>Electrcity Generated: " + d.egen)
       .style("left", (event.pageX + 10) + "px")
       .style("top", (event.pageY - 28) + "px");
   };
-  const mouseleave1 = function(event, d) {tooltip1.style("opacity", 0);};
-  svg1.selectAll("dot")
+  const mouseleave = function(event, d) {tooltip.style("opacity", 0);};
+  svg.selectAll("dot")
     .data(option1)
     .enter().append("circle")
     .attr("cx", function(d) { return x(d.year); })
     .attr("cy", function(d) { return y(d.egen); })
     .attr("r", 5)
-<<<<<<< HEAD
-<<<<<<< HEAD
     .attr("fill", "black")
-    .on("mouseover", mouseover1)
-    .on("mousemove", mousemove1)
-    .on("mouseleave", mouseleave1);
-
-  const tooltip2 = d3.select("#gdpgraph").append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "2px")
-    .style("border-radius", "5px")
-    .style("padding", "5px")
-    .style("position", "absolute")
-    .style("pointer-events", "none");
-
-  const mouseover2 = function(event, d) {tooltip2.style("opacity", 1);};
-  
-  const mousemove2 = function(event, d) {
-    tooltip2.html("Year: " + d.year + "<br>GDP Per Capita: $" + d.gdp)
-      .style("left", (event.pageX + 10) + "px")
-      .style("top", (event.pageY - 28) + "px");
-  };
-  const mouseleave2 = function(event, d) {tooltip2.style("opacity", 0);};
-  svg2.selectAll("dot")
-    .data(option1)
-    .enter().append("circle")
-    .attr("cx", function(d) { return x(d.year); })
-    .attr("cy", function(d) { return y(d.gdp); })
-    .attr("r", 5)
-    .attr("fill", "black")
-    .on("mouseover", mouseover2)
-    .on("mousemove", mousemove2)
-    .on("mouseleave", mouseleave2);
-=======
-=======
->>>>>>> parent of 41407aa (Update charts.js)
-    .attr("fill", "red")
     .on("mouseover", mouseover)
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
->>>>>>> parent of 41407aa (Update charts.js)
 
   //update upon new country selection
   function update(newCountry) {
     const countryData = data.filter(function (d) {return d.entity === newCountry;});
-    y1.domain([0, d3.max(countryData, d => +d.egen)]);
-    y1Axis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
-    y2.domain([0, d3.max(countryData, d => +d.gdp)]);
-    y2Axis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => "$" + d));
+    y.domain([0, d3.max(countryData, d => +d.egen)]);
+    yAxis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
     
-    line1.datum(countryData)
+    line.datum(countryData)
       .transition()
       .duration(1000)
       .attr("id", "line-" + newCountry)
@@ -182,45 +103,22 @@ async function elecgdp() {
       .attr("stroke","black")
       .style("stroke-width", 5)
       .style("fill","none");
-
-    line2.datum(countryData)
-      .transition()
-      .duration(1000)
-      .attr("id", "line-" + newCountry)
-      .attr("d", d3.line()
-            .x(function (d) {return x(Number(d.year))})
-            .y(function (d) {return y(Number(d.gdp))}))
-      .attr("stroke","black")
-      .style("stroke-width", 5)
-      .style("fill","none");
   
 
     //update mouseover
-    const circles1 = svg1.selectAll("circle").data(countryData);
+    const circles = svg.selectAll("circle")
+      .data(countryData);
     
-    circles1.enter().append("circle")
-      .merge(circles1)
+    circles.enter().append("circle")
+      .merge(circles)
       .transition()
       .duration(1000)
       .attr("cx", function(d) { return x(d.year); })
       .attr("cy", function(d) { return y(d.egen); })
-      .attr("r",5)
+      .attr("r",4)
       .attr("fill", "black");
       
-    circles1.exit().remove();
-
-    const circles2 = svg2.selectAll("circle").data(countryData);
-    
-    circles2.enter().append("circle")
-      .merge(circles2)
-      .transition()
-      .duration(1000)
-      .attr("cx", function(d) { return x(d.year); })
-      .attr("cy", function(d) { return y(d.gdp); })
-      .attr("r",5)
-      .attr("fill", "black");
-      
-    circles2.exit().remove();
+    circles.exit().remove();
   }
   d3.select("#select-country").on("change", function (d) {
     const nextCountry = d3.select(this).property("value")
