@@ -1,5 +1,4 @@
 async function electricity() {
-  //https://d3-graph-gallery.com/graph/line_select.html
   const margin = {top: 40, right: 80, bottom: 40, left: 80},
         width = 800 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
@@ -71,7 +70,7 @@ async function electricity() {
   const mouseover = function(event, d) {tooltip.style("opacity", 1);};
   
   const mousemove = function(event, d) {
-    tooltip.html("Year: " + d.year + "<br>Electrcity Generated: " + d.egen)
+    tooltip.html("Year: " + d.year + "<br>Electrcity Generated: " + d.egen + " TWh")
       .style("left", (event.pageX + 10) + "px")
       .style("top", (event.pageY - 28) + "px");
   };
@@ -119,6 +118,135 @@ async function electricity() {
       .attr("fill", "black");
       
     circles.exit().remove();
+  }
+  d3.select("#select-country").on("change", function (d) {
+    const nextCountry = d3.select(this).property("value")
+    update(nextCountry)
+  });
+}
+
+//page3 graph
+async function elecgdp() {
+  const margin = {top: 40, right: 80, bottom: 40, left: 80},
+        width = 800 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+  const data = await d3.csv("data/combined.csv");
+
+  let svg = d3.select("#electricgdp").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+  
+  //Dropdown
+  const entities = getCountries();
+  d3.select("#select-country")
+    .selectAll('country-options')
+    .data(entities)
+    .enter()
+    .append('option')
+    .text(function (d) {return d;})
+    .attr("value", function (d) {return d;});
+  
+  //Scatter Plot
+  const option1 = data.filter(function (d) {
+    return d.entity === entities[0]
+  });
+  
+  const x = d3.scaleLinear()
+    .domain([Math.floor(d3.min(option1,f => +d.gdp)/1000)*1000 ,Math.ceil(d3.max(option1,f => +d.gdp)/1000)*1000])
+    .range([0, width]);
+  const xAxis = svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).tickFormat(f => "$" + f));
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(option1, d => +d.egen)])
+    .range([height, 0]);
+  const yAxis = svg.append("g").call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
+
+  svg.append("text")
+    .attr("x", (width / 2))
+    .attr("y", 0 - (margin.top / 2))
+    .attr("text-anchor", "middle")  
+    .style("font-size", "16px")
+    .text("Electricity Generation vs GDP Per Capita");
+
+  //Mouseover
+  const tooltip = d3.select("#electricgdp").append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .style("position", "absolute")
+    .style("pointer-events", "none");
+  
+  const mouseover = function(event, d) {tooltip.style("opacity", 1);};
+  
+  const mousemove = function(event, d) {
+    tooltip.html("Year: " + d.year + "<br>Electricity Generated: " + d.egen+"  TWh<br>GDP Per Capita: $" + d.gdp)
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY - 28) + "px");
+  };
+  const mouseleave = function(event, d) {tooltip.style("opacity", 0);};
+
+  //dots
+  svg.append('g')
+    .selectAll("dot")
+    .data(option1)
+    .enter()
+    .append("circle")
+      .attr("cx", function (d) { return x(Number(d.gdp)); } )
+      .attr("cy", function (d) { return y(Number(d.egen)); } )
+      .attr("r", 4)
+      .style("fill", "blue")
+    .on("mouseover", mouseover)
+    .on("mousemove", mousemove)
+    .on("mouseleave", mouseleave);
+
+  //update upon new country selection
+  function update(newCountry) {
+    const countryData = data.filter(function (d) {return d.entity === newCountry;});
+
+    x.domain([Math.floor(d3.min(countryData,d => +d.gdp)/1000)*1000 ,Math.ceil(d3.max(countryData,d => +d.gdp)/1000)*1000]);
+    yAxis.transition().duration(1000).call(d3.axisBottom(x).tickFormat(d => "$" + d));
+    y.domain([0, d3.max(countryData, d => +d.egen)]);
+    yAxis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + " TWh"));
+    
+    // line.datum(countryData)
+    //   .transition()
+    //   .duration(1000)
+    //   .attr("id", "line-" + newCountry)
+    //   .attr("d", d3.line()
+    //         .x(function (d) {return x(Number(d.gdp))})
+    //         .y(function (d) {return y(Number(d.egen))}))
+    //   .attr("stroke","black")
+    //   .style("stroke-width", 5)
+    //   .style("fill","none");
+
+    dots.datum(newCountry)
+      .transition()
+      .duration(1000)
+      .attr("cx", function (d) { return x(Number(d.gdp)); } )
+      .attr("cy", function (d) { return y(Number(d.egen)); } )
+      .attr("r", 4)
+      .style("fill", "blue")
+      .on("mouseover", mouseover1)
+      .on("mousemove", mousemove1)
+      .on("mouseleave", mouseleave1);
+
+      const mouseover1 = function(event, d) {tooltip.style("opacity", 1);};
+  
+  const mousemove1 = function(event, d) {
+    tooltip.html("Year: " + d.year + "<br>Electricity Generated: " + d.egen+"  TWh<br>GDP Per Capita: $" + d.gdp)
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY - 28) + "px");
+  };
+  const mouseleave1 = function(event, d) {tooltip.style("opacity", 0);};
+
+    
   }
   d3.select("#select-country").on("change", function (d) {
     const nextCountry = d3.select(this).property("value")
