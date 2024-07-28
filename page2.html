@@ -1,1 +1,136 @@
-<h1>This is page 2</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Generation Over Time</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .chart {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: 80px;
+            height: 28px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart">
+        <h2>Electricity Generation Over Time</h2>
+        <label for="country">Select Country: </label>
+        <select id="country"></select>
+        <svg width="800" height="400"></svg>
+    </div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+        const width = 800 - margin.left - margin.right;
+        const height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select("svg")
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const x = d3.scaleTime().range([0, width]);
+        const y = d3.scaleLinear().range([height, 0]);
+
+        const line = d3.line()
+            .x(d => x(d.year))
+            .y(d => y(d.electricity_generation));
+
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        d3.csv("./data/combined.csv").then(data => {
+            data.forEach(d => {
+                d.year = new Date(d.year, 0, 1);
+                d.electricity_generation = +d.electricity_generation;
+            });
+
+            const countries = [...new Set(data.map(d => d.country))];
+            const countrySelect = d3.select("#country");
+
+            countrySelect.selectAll("option")
+                .data(countries)
+                .enter()
+                .append("option")
+                .text(d => d);
+
+            countrySelect.on("change", update);
+
+            function update() {
+                const selectedCountry = countrySelect.node().value;
+                const filteredData = data.filter(d => d.country === selectedCountry);
+
+                x.domain(d3.extent(filteredData, d => d.year));
+                y.domain([0, d3.max(filteredData, d => d.electricity_generation)]);
+
+                svg.selectAll("*").remove();
+
+                svg.append("g")
+                    .attr("transform", `translate(0,${height})`)
+                    .call(d3.axisBottom(x).ticks(d3.timeYear.every(5)));
+
+                svg.append("g")
+                    .call(d3.axisLeft(y));
+
+                svg.append("path")
+                    .datum(filteredData)
+                    .attr("fill", "none")
+                    .attr("stroke", "steelblue")
+                    .attr("stroke-width", 1.5)
+                    .attr("d", line);
+
+                svg.selectAll("circle")
+                    .data(filteredData)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", d => x(d.year))
+                    .attr("cy", d => y(d.electricity_generation))
+                    .attr("r", 4)
+                    .attr("fill", "red")
+                    .on("mouseover", function (event, d) {
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(`Year: ${d3.timeFormat("%Y")(d.year)}<br>Gen: ${d.electricity_generation}`)
+                            .style("left", (event.pageX + 5) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function () {
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    });
+
+                const peak = d3.max(filteredData, d => d.electricity_generation);
+                const peakData = filteredData.filter(d => d.electricity_generation === peak)[0];
+
+                svg.append("text")
+                    .attr("x", x(peakData.year))
+                    .attr("y", y(peakData.electricity_generation) - 10)
+                    .attr("text-anchor", "middle")
+                    .attr("fill", "black")
+                    .text(`Peak: ${peakData.electricity_generation}`);
+            }
+
+            update();
+        });
+    </script>
+</body>
+</html>
