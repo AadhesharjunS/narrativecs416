@@ -62,8 +62,8 @@ async function electricity() {
   }
   
   d3.select("#select-country").on("change", function (d) {
-    const newcountry = d3.select(this).property("value");
-    update(newcountry);
+    const newcountry = d3.select(this).property("value")
+    update(newcountry)
   });
 }
   
