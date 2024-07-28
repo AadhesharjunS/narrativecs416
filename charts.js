@@ -58,7 +58,10 @@ async function electricity() {
       .attr("id", "line-" + newCountry)
       .attr("d", d3.line()
             .x(function (d) {return x(Number(d.year))})
-            .y(function (d) {return y(Number(d.egen))}));
+            .y(function (d) {return y(Number(d.egen))}))
+      .attr("stroke","black")
+      .style("stroke-width", 5)
+      .style("fill","none");
   }
   
   d3.select("#select-country").on("change", function (d) {
