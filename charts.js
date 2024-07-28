@@ -1,5 +1,5 @@
 async function electricity() {
-  const margin = {top: 20, right: 30, bottom: 40, left: 30},
+  const margin = {top: 20, right: 30, bottom: 40, left: 70},
         width = 800 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
   const data = await d3.csv("https://aadhesharjuns.github.io/narrativecs416/data/combined.csv");
