@@ -53,8 +53,6 @@ async function electricity() {
     const countryData = data.filter(function (d) {return d.entity === newCountry;});
     
     line.data(countryData)
-      .transition()
-      .duration(1000)
       .attr("id", "line-" + newCountry)
       .attr("d", d3.line()
             .x(function (d) {return x(Number(d.year))})
