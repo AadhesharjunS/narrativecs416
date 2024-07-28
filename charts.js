@@ -108,8 +108,8 @@ async function electricity() {
       .duration(1000)
       .attr("cx", function(d) { return x(d.year); })
       .attr("cy", function(d) { return y(d.egen); })
-      .attr("r", 5)
-      .attr("fill", "red");
+      .attr("r",4)
+      .attr("fill", "black");
       
     circles.exit().remove();
   }
