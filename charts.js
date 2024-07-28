@@ -1,6 +1,6 @@
 async function electricity() {
   const width = 800, height = 600;
-  const data = d3.csv("data/combined.csv");
+  const data = d3.csv('data/combined.csv');
   
   const svg = d3.select("#electricgraph").append("svg")
     .attr("width", width)
