@@ -87,41 +87,50 @@ async function electricity() {
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
 
-function annotatechart1(d, x, y, margin) {
-    const annotations = [
-        {
-            note: {
-                label: (Math.round(d.egen/10)*10) + " TWh",
-                lineType: "none",
-                bgPadding: {"top": 15, "left": 10, "right": 10, "bottom": 10},
-                title: d.year,
-                orientation: "leftRight",
-                "align": "middle"
-            },
-            type: d3.annotationCallout,
-            subject: {radius: 15},
-            dx: x,
-            dy: y
-        },
-    ];
-    const makeAnnotations = d3.annotation().annotations(annotations);
+// function annotatechart1(d, x, y, margin) {
+//     const annotations = [
+//         {
+//             note: {
+//                 label: (Math.round(d.egen/10)*10) + " TWh",
+//                 lineType: "none",
+//                 bgPadding: {"top": 15, "left": 10, "right": 10, "bottom": 10},
+//                 title: d.year,
+//                 orientation: "leftRight",
+//                 "align": "middle"
+//             },
+//             type: d3.annotationCallout,
+//             subject: {radius: 15},
+//             dx: x,
+//             dy: y
+//         },
+//     ];
+//     const makeAnnotations = d3.annotation().annotations(annotations);
 
-    d3.select("svg")
-        .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")")
-        .attr("class", "annotation-group")
-        .call(makeAnnotations)
-}
+//     d3.select("svg")
+//         .append("g")
+//         .attr("transform",
+//             "translate(" + margin.left + "," + margin.top + ")")
+//         .attr("class", "annotation-group")
+//         .call(makeAnnotations)
+// }
 
-  decades().forEach(function (years) {
-        for (let i = 0; i < option1.length; i++) {
-            if (option1[i].year === years) {
-                const years = option1[i];
-                annotatechart1(option1, x(Number(option1.year)), y(Number(option1.egen)), margin);
-            }
-        }
-    })
+  // decades().forEach(function (years) {
+  //       for (let i = 0; i < option1.length; i++) {
+  //           if (option1[i].year === years) {
+  //               const years = option1[i];
+  //               annotatechart1(option1, x(Number(option1.year)), y(Number(option1.egen)), margin);
+  //           }
+  //       }
+  //   })
+  
+  function updateDataValues(data, years) {
+    const values = years.map(year => {
+    const entry = data.find(d => +d.year === year);
+    return entry ? '${year}: ${entry.egen} TWh' : '${year}: No data';}).join("<br>");
+    d3.select("#annotates").html(values);
+  }
+
+  updateDataValues(option1,decades);
 
   //update upon new country selection
   function update(newCountry) {
@@ -155,16 +164,17 @@ function annotatechart1(d, x, y, margin) {
       .attr("fill", "black");
       
     circles.exit().remove();
+    updateDataValues(countryData,decades);
     
-    d3.select(".annotation-group").remove();
-    decades().forEach(function (years) {
-        for (let i = 0; i < countryData.length; i++) {
-            if (countryData[i].year === years) {
-                const years = countryData[i];
-                annotatechart1(countryData, x(Number(countryData.year)), y(Number(countryData.egen)), margin);
-            }
-        }
-    })
+    // d3.select(".annotation-group").remove();
+    // decades().forEach(function (years) {
+    //     for (let i = 0; i < countryData.length; i++) {
+    //         if (countryData[i].year === years) {
+    //             const years = countryData[i];
+    //             annotatechart1(countryData, x(Number(countryData.year)), y(Number(countryData.egen)), margin);
+    //         }
+    //     }
+    // })
   }
   d3.select("#select-country").on("change", function (d) {
     const nextCountry = d3.select(this).property("value")
