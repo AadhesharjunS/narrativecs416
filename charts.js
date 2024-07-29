@@ -88,8 +88,6 @@ async function electricity() {
     .on("mouseleave", mouseleave);
 
 function annotatechart1(d, x, y, margin) {
-    const computedDX = d.year == 2010 ? -100 : 100;
-    const computedDY = d.year == 2010 ? 100 : -100;
     const annotations = [
         {
             note: {
@@ -101,11 +99,9 @@ function annotatechart1(d, x, y, margin) {
                 "align": "middle"
             },
             type: d3.annotationCallout,
-            subject: {radius: 5},
-            x: x,
-            y: y,
-            dx: computedDX,
-            dy: computedDY
+            subject: {radius: 15},
+            dx: x,
+            dy: y
         },
     ];
     const makeAnnotations = d3.annotation().annotations(annotations);
