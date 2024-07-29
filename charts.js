@@ -5,7 +5,7 @@ async function electricity() {
         height = 600 - margin.top - margin.bottom;
   const data = await d3.csv("data/combined.csv");
   
-  let svg = d3.select("#electricgraph").append("svg")
+  const svg = d3.select("#electricgraph").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -87,6 +87,21 @@ async function electricity() {
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
 
+decades().forEach(function (years) {
+        for (let i = 0; i < option1.length; i++) {
+            if (option1[i].year === years) {
+                const countryData = option1[i];
+              svg.append("text")
+                .attr("class", "bottom-text")
+                .attr("x", (width / 2))
+                .attr("y", height + margin.bottom / 2)
+                .attr("text-anchor", "middle")  
+                .style("font-size", "16px")
+                .text(option1[i).year + ": " + option1[i].egen + " TWh<br>";
+            }
+        }
+    })
+                                              
 // function annotatechart1(d, x, y, margin) {
 //     const annotations = [
 //         {
@@ -122,15 +137,6 @@ async function electricity() {
   //           }
   //       }
   //   })
-  
-  function updateDataValues(data, years) {
-    const values = years.map(year => {
-    const entry = data.find(d => +d.year === year);
-    return entry ? '${year}: ${entry.egen} TWh' : '${year}: No data';}).join("<br>");
-    d3.select("#annotates").html(values);
-  }
-
-  updateDataValues(option1,decades);
 
   //update upon new country selection
   function update(newCountry) {
@@ -164,7 +170,21 @@ async function electricity() {
       .attr("fill", "black");
       
     circles.exit().remove();
-    updateDataValues(countryData,decades);
+    svg.select(".bottom-text").remove();
+    decades().forEach(function (years) {
+        for (let i = 0; i < option1.length; i++) {
+            if (option1[i].year === years) {
+                const countryData = option1[i];
+              svg.append("text")
+                .attr("class", "bottom-text")
+                .attr("x", (width / 2))
+                .attr("y", height + margin.bottom / 2)
+                .attr("text-anchor", "middle")  
+                .style("font-size", "16px")
+                .text(option1[i).year + ": " + option1[i].egen + " TWh<br>";
+            }
+        }
+    })
     
     // d3.select(".annotation-group").remove();
     // decades().forEach(function (years) {
