@@ -88,14 +88,11 @@ async function electricity() {
     .on("mouseleave", mouseleave);
 
   function addAnnotations(data) {
-        const annotations = [
-          { year: 2000, note: { label: "2000" } },
-          { year: 2010, note: { label: "2010" } },
-          { year: 2020, note: { label: "2020" } }
-        ].map(d => {
-          const point = data.find(e => +e.year === d.year);
+      const years = [2000, 2010, 2020];
+        const annotations = years.map(year => {
+          const point = data.find(d => +d.year === year);
           return {
-            note: d.note,
+            note: { label: String(year) },
             x: x(+point.year),
             y: y(+point.egen),
             dy: -10,
