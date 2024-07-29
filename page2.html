@@ -10,29 +10,25 @@
 </head>
 <body onload="electricity()">
     <style>     
-      .jumbotron {
-          background: black;
-          padding-top: 15px;
-          padding-bottom: 15px;
-          margin-top: 20px;
-          margin-bottom: 20px;
-      }
-      .header{
-        color: white;
-        position: center;
-      }
-
-      .header h1{
-        position: center;
-        left: 10px;
-      }
+        .jumbotron {
+            background: black;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .header{
+            color: white;
+            text-align: center;
+        }
 
     </style>
     <div class="jumbotron">
-            <div class="header">
-              <h1>Electricity Generation by Year & Country</h1>
-            </div>
+        <div class="header">
+            <h1>Electricity Generation Over Year</h1>
+            <h3>(Filter by Country)</h3>
         </div>
+    </div>
     <div class = "container">
         <p>Electricity is often taken for granted nowadays in developed countries; we can turn it on with the flick of a switch. However, in many other countries, the infrastructure for continuous electricity is simply not viable. That said, electricity has been getting cleaner and more accessible throughout the years, and it has been on a steady increase for decades. Feel free to look through nearly 196 countries and see how their electricity generation increased over the years.</p>
         <select id="select-country"></select>
