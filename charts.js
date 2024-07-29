@@ -87,6 +87,14 @@ async function electricity() {
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
 
+  const option12000 = option1.filter(function (d) {return d.year === 2000});
+  const option12010 = option1.filter(function (d) {return d.year === 2010});
+  const option12020 = option1.filter(function (d) {return d.year === 2020});
+
+  makeAnnotations(option12000, x(Number(option12000.year)) - 10, y(Number(option12000.egen)) - 10, margin);
+  makeAnnotations(option12010, x(Number(option12010.year)) - 10, y(Number(option12010.egen)) - 10, margin);
+  makeAnnotations(option12020, x(Number(option12020.year)) - 10, y(Number(option12020.egen)) - 10, margin);
+
   //update upon new country selection
   function update(newCountry) {
     const countryData = data.filter(function (d) {return d.entity === newCountry;});
@@ -119,6 +127,14 @@ async function electricity() {
       .attr("fill", "black");
       
     circles.exit().remove();
+
+  const newoption12000 = countryData.filter(function (d) {return d.year === 2000});
+  const newoption12010 = countryData.filter(function (d) {return d.year === 2010});
+  const newoption12020 = countryData.filter(function (d) {return d.year === 2020});
+
+  makeAnnotations(newoption12000, x(Number(newoption12000.year)) - 10, y(Number(newoption12000.egen)) - 10, margin);
+  makeAnnotations(newoption12010, x(Number(newoption12010.year)) - 10, y(Number(newoption12010.egen)) - 10, margin);
+  makeAnnotations(newoption12020, x(Number(newoption12020.year)) - 10, y(Number(newoption12020.egen)) - 10, margin);
   }
   d3.select("#select-country").on("change", function (d) {
     const nextCountry = d3.select(this).property("value")
@@ -533,6 +549,39 @@ async function elecco2() {
 
 <!-- -------------------------------------------------------------------------------------------- -->
 
+function annotations1(d, x, y, margin) {
+    d3.select(".annotation-group").remove();
+    const annotate = [
+        {
+            note: {
+                label: "Electricity Generated: "+(Math.round(d.egen/10)*10) + " TWh",
+                lineType: "none",
+                bgPadding: {"top": 15, "left": 10, "right": 10, "bottom": 10},
+                title: d.Year,
+                orientation: "topBottom",
+                align: "top"
+            },
+            type: d3.annotationCallout,
+            subject: {radius: 30},
+            x: x,
+            y: y,
+            dx: -100,
+            dy: -10
+        },
+    ];
+    const makeAnnotations = d3.annotation().annotations(annotate);
+    const chart = d3.select("svg")
+    chart.transition()
+        .duration(1000);
+    chart.append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")")
+        .attr("class", "annotation-group")
+        .call(makeAnnotations)
+}
+
+<!-- -------------------------------------------------------------------------------------------- -->
+  
   
 function getCountries() {
   //196 countries
