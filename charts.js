@@ -181,7 +181,7 @@ decades().forEach(function (years) {
                 .attr("y", height + margin.bottom / 2)
                 .attr("text-anchor", "middle")  
                 .style("font-size", "16px")
-                .text(option1[i).year + ": " + option1[i].egen + " TWh<br>";
+                .text(option1[i].year + ": " + option1[i].egen + " TWh<br>");
             }
         }
     })
