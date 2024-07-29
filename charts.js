@@ -87,28 +87,45 @@ async function electricity() {
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
 
-  function addAnnotations(data) {
-      const years = [2000, 2010, 2020];
-        const annotations = years.map(year => {
-          const point = data.find(d => +d.year === year);
-          return {
-            note: { label: String(year) },
-            x: x(+point.year),
-            y: y(+point.egen),
-            dy: -10,
-            dx: 10
-          };
-        });
+function annotatechart1(d, x, y, margin) {
+    const computedDX = d.year == 2010 ? -100 : 100;
+    const computedDY = d.year == 2010 ? 100 : -100;
+    const annotations = [
+        {
+            note: {
+                label: (Math.round(d.egen/10)*10) + " TWh",
+                lineType: "none",
+                bgPadding: {"top": 15, "left": 10, "right": 10, "bottom": 10},
+                title: d.year,
+                orientation: "leftRight",
+                "align": "middle"
+            },
+            type: d3.annotationCallout,
+            subject: {radius: 5},
+            x: x,
+            y: y,
+            dx: computedDX,
+            dy: computedDY
+        },
+    ];
+    const makeAnnotations = d3.annotation().annotations(annotations);
 
-        const makeAnnotations = d3.annotation()
-          .annotations(annotations);
+    d3.select("svg")
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")")
+        .attr("class", "annotation-group")
+        .call(makeAnnotations)
+}
 
-        svg.append("g")
-          .attr("class", "annotation-group")
-          .call(makeAnnotations);
-      }
-
-      addAnnotations(option1);
+  decades().forEach(function (years) {
+        for (let i = 0; i < option1.length; i++) {
+            if (option1[i].year === years) {
+                const years = option1[i];
+                annotatechart1(option1, x(Number(option1.year)), y(Number(option1.egen)), margin);
+            }
+        }
+    })
 
   //update upon new country selection
   function update(newCountry) {
@@ -144,7 +161,14 @@ async function electricity() {
     circles.exit().remove();
     
     d3.select(".annotation-group").remove();
-    addAnnotations(countryData);
+    decades().forEach(function (years) {
+        for (let i = 0; i < countryData.length; i++) {
+            if (countryData[i].year === years) {
+                const years = countryData[i];
+                annotatechart1(countryData, x(Number(countryData.year)), y(Number(countryData.egen)), margin);
+            }
+        }
+    })
   }
   d3.select("#select-country").on("change", function (d) {
     const nextCountry = d3.select(this).property("value")
@@ -563,4 +587,8 @@ async function elecco2() {
 function getCountries() {
   //196 countries
   return ["Afghanistan", "Albania", "Algeria", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cyprus", "Czechia", "Democratic Republic of Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mauritania", "Mauritius", "Mexico", "Moldova", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vietnam", "Zambia", "Zimbabwe"]
+}
+
+function decades() {
+    return [1990,2000,2010,2020]
 }
