@@ -91,9 +91,9 @@ async function electricity() {
   const option12010 = option1.filter(function (d) {return d.year === 2010});
   const option12020 = option1.filter(function (d) {return d.year === 2020});
 
-  makeAnnotations(option12000, x(Number(option12000.year)) - 10, y(Number(option12000.egen)) - 10, margin);
-  makeAnnotations(option12010, x(Number(option12010.year)) - 10, y(Number(option12010.egen)) - 10, margin);
-  makeAnnotations(option12020, x(Number(option12020.year)) - 10, y(Number(option12020.egen)) - 10, margin);
+  annotations1(option12000, x(Number(option12000.year)) - 10, y(Number(option12000.egen)) - 10, margin);
+  annotations1(option12010, x(Number(option12010.year)) - 10, y(Number(option12010.egen)) - 10, margin);
+  annotations1(option12020, x(Number(option12020.year)) - 10, y(Number(option12020.egen)) - 10, margin);
 
   //update upon new country selection
   function update(newCountry) {
@@ -132,9 +132,9 @@ async function electricity() {
   const newoption12010 = countryData.filter(function (d) {return d.year === 2010});
   const newoption12020 = countryData.filter(function (d) {return d.year === 2020});
 
-  makeAnnotations(newoption12000, x(Number(newoption12000.year)) - 10, y(Number(newoption12000.egen)) - 10, margin);
-  makeAnnotations(newoption12010, x(Number(newoption12010.year)) - 10, y(Number(newoption12010.egen)) - 10, margin);
-  makeAnnotations(newoption12020, x(Number(newoption12020.year)) - 10, y(Number(newoption12020.egen)) - 10, margin);
+  annotations1(newoption12000, x(Number(newoption12000.year)) - 10, y(Number(newoption12000.egen)) - 10, margin);
+  annotations1(newoption12010, x(Number(newoption12010.year)) - 10, y(Number(newoption12010.egen)) - 10, margin);
+  annotations1(newoption12020, x(Number(newoption12020.year)) - 10, y(Number(newoption12020.egen)) - 10, margin);
   }
   d3.select("#select-country").on("change", function (d) {
     const nextCountry = d3.select(this).property("value")
